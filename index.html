@@ -4,96 +4,306 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bible Nook</title>
-<meta name="description" content="A calm, beautiful Bible for iPhone, iPad and Apple Watch. Turn real pages, highlight, take notes and grow a daily reading habit.">
+<meta name="description" content="A quiet place to read Scripture. Turn pages like a real book, save the verses that stay with you, and build a daily reading habit on iPhone, iPad and Apple Watch.">
 <meta property="og:title" content="Bible Nook">
 <meta property="og:description" content="A quiet place to read Scripture, on iPhone, iPad and Apple Watch.">
 <meta property="og:image" content="https://biblenook.app/images/icon.png">
 <link rel="icon" href="images/icon.png">
 <link rel="apple-touch-icon" href="images/icon.png">
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  color-scheme: light;
+  --ink: #1d1d1f;
+  --secondary: #50545a;
+  --muted: #5d6267;
+  --green: #235a43;
+  --line: #e7e8ea;
+  --panel: #f5f5f7;
+  --white: #fff;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--white); color: var(--ink); font: 17px/1.45 var(--sans); }
+a { color: inherit; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--green); outline-offset: 5px; }
+img { display: block; width: 100%; height: auto; }
+.wrap { width: min(1160px, calc(100% - 96px)); margin-inline: auto; }
+header { border-bottom: 1px solid var(--line); }
+.nav { min-height: 58px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 22px; }
+.brand { display: inline-flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 650; letter-spacing: -.025em; text-decoration: none; }
+.brand img { width: 30px; border-radius: 7px; }
+nav, .footer-links { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 25px; }
+nav a, .footer-links a { padding-block: 6px; color: var(--secondary); font-size: 13px; text-decoration: none; }
+nav a:hover, .footer-links a:hover { text-decoration: underline; }
+.hero { display: grid; grid-template-columns: .93fr 1.07fr; align-items: center; gap: clamp(24px, 4.8vw, 72px); padding-block: 42px 66px; }
+.hero h1 { margin: 0 0 20px; font-size: clamp(38px, 5.25vw, 76px); font-weight: 680; line-height: .98; letter-spacing: -.069em; }
+.hero h1 span { color: var(--green); }
+.hero-copy > p:not(.status) { max-width: 35ch; margin: 0 0 24px; color: var(--secondary); font-size: clamp(18px, 1.8vw, 23px); line-height: 1.37; letter-spacing: -.017em; }
+.hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 14px; }
+.button { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px; border-radius: 999px; background: var(--green); color: var(--white); font-size: 14px; font-weight: 600; text-decoration: none; }
+.button:hover { background: #194633; }
+.status { color: var(--muted); font-size: 13px; margin: 0; }
+.reader-stage { position: relative; min-width: 0; min-height: 545px; display: grid; place-items: center; margin: 0; padding: 27px 20px 40px; overflow: hidden; border-radius: 30px; background: radial-gradient(ellipse at 52% 26%, #fafcfb, #e8f1ed 64%, #dfece6); }
+/* The screenshot stays separate from the hardware so each device can reuse the same frame. */
+.device {
+  --body-radius: 36px;
+  --rail-width: 2px;
+  --bezel-width: 3px;
+  --rail-light: #d7dcdd;
+  --rail-mid: #969e9f;
+  --rail-dark: #555e5f;
+  position: relative;
+  isolation: isolate;
+  padding: var(--rail-width);
+  border-radius: var(--body-radius);
+  background: linear-gradient(135deg, var(--rail-light) 0%, var(--rail-mid) 17%, var(--rail-dark) 45%, var(--rail-mid) 72%, var(--rail-light) 90%, var(--rail-dark) 100%);
+  box-shadow: inset 0 0 0 1px #ffffff53, 0 0 0 1px #30373390, 0 2px 5px #17201d3d, 0 18px 36px #18282335;
+}
+.phone { width: min(223px, 72%); }
+.device-screen {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: var(--bezel-width) solid #161819;
+  border-radius: calc(var(--body-radius) - var(--rail-width));
+  background: #161819;
+  box-shadow: 0 0 0 1px #1117145c;
+}
+.device-screen img { display: block; width: 100%; }
+.device-island {
+  position: absolute;
+  top: 1.32%;
+  left: 50%;
+  width: 28%;
+  height: 3.48%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #08090a;
+  box-shadow: inset 0 0 0 1px #353a3b63;
+}
+.device-island::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 12%;
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 37% 39%, #29334d 0%, #161d30 32%, #0c1017 62%);
+}
+.device-control {
+  position: absolute;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--rail-dark), var(--rail-mid) 45%, var(--rail-light) 72%, var(--rail-dark));
+}
+.device-control-action { top: 17.2%; left: -2px; height: 3.1%; }
+.device-control-volume-up { top: 22%; left: -2px; height: 5.3%; }
+.device-control-volume-down { top: 29%; left: -2px; height: 5.3%; }
+.device-control-power { top: 25%; right: -2px; height: 8%; }
+.reader-stage figcaption { position: absolute; right: 17px; bottom: 11px; color: #36594c; font-size: 11px; }
+.features { padding-block: 64px 72px; background: var(--panel); }
+h2 { margin: 0; font-size: clamp(35px, 5.1vw, 65px); font-weight: 665; line-height: 1.02; letter-spacing: -.058em; }
+.features h2 { margin-bottom: 31px; }
+.feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+article { min-width: 0; overflow: hidden; border-radius: 24px; background: var(--white); }
+.card-reading { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
+.card-copy { padding: clamp(22px, 3.7vw, 49px); }
+.card-copy h3 { margin: 0 0 9px; font-size: clamp(25px, 2.85vw, 39px); font-weight: 650; line-height: 1.06; letter-spacing: -.05em; }
+.card-copy p { max-width: 44ch; margin: 0; color: var(--secondary); }
+.card-media { height: 245px; padding: 23px 18px 0; display: flex; justify-content: center; overflow: hidden; background: #e9f2ee; }
+.card-media .device { align-self: flex-start; flex: 0 0 auto; width: min(235px, 82%); }
+.card-reading .card-media { height: 310px; align-self: stretch; background: #e8eeeb; }
+.card-notes .card-media { background: #eeebf4; }
+.card-listen .card-media { background: #eef1f7; }
+.card-cards .card-media { background: #f4f0e6; }
+.card-habit .card-media { background: #fbefe5; }
+.card-medals .card-media { background: #f6eedf; }
+.card-watch .card-media { background: #e7ecef; align-items: flex-start; }
+.card-friends .card-media { background: #eaf0ea; display: flex; align-items: center; padding: 22px; }
+.section { padding-block: 72px; }
+.section.alt { background: var(--panel); }
+.section h2 { margin-bottom: 14px; }
+.lede { max-width: 52ch; margin: 0 0 32px; color: var(--secondary); font-size: clamp(18px, 1.8vw, 22px); line-height: 1.4; letter-spacing: -.015em; }
+.pencil { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; overflow: hidden; border-radius: 24px; background: var(--white); }
+.pencil .card-media { height: auto; padding: 0; background: #f1efe9; }
+.pencil .card-media img { border-radius: 0; }
+.pencil ul { margin: 16px 0 0; padding: 0; list-style: none; color: var(--secondary); }
+.pencil li { padding: 7px 0; border-top: 1px solid var(--line); }
+.watch-frame { width: 150px; margin-top: 6px; padding: 9px; border-radius: 44px; background: linear-gradient(135deg, #d7dcdd, #6b7374 50%, #d7dcdd); box-shadow: 0 18px 36px #18282335; }
+.watch-frame img { border-radius: 34px; background: #000; }
+.watches { display: flex; gap: 14px; justify-content: center; }
+.watches .watch-frame:nth-child(2) { margin-top: 30px; }
+.post { width: min(300px, 100%); padding: 16px 18px; border-radius: 20px; background: var(--white); box-shadow: 0 10px 30px #1a3a2a1f; font-size: 14px; }
+.post + .post { margin-top: 12px; }
+.post .who { display: flex; align-items: center; gap: 9px; font-weight: 600; }
+.post .who span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #e6efe9; font-size: 17px; }
+.post .who small { margin-left: auto; color: var(--muted); font-weight: 400; }
+.post q { display: block; margin: 9px 0 6px; padding-left: 10px; border-left: 3px solid #e2477a; font-family: "New York", Georgia, serif; font-size: 15px; quotes: none; }
+.post .meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+.post .meta b { color: #e2477a; font-weight: 600; }
+.stack .post:nth-child(2) { margin-left: 34px; }
+.privacy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 8px; }
+.privacy div { padding: 22px; border-radius: 20px; background: var(--white); }
+.privacy h3 { margin: 0 0 6px; font-size: 19px; letter-spacing: -.03em; }
+.privacy p { margin: 0; color: var(--secondary); font-size: 15px; }
+@media (max-width: 760px) {
+  .pencil, .privacy { grid-template-columns: 1fr; }
+  .section { padding-block: 44px; }
+}
+.platforms { padding-block: 68px; }
+.platform-grid { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 20px 55px; }
+.platform-grid p { margin: 0; color: var(--secondary); }
+.platform-grid p+p { margin-top: 10px; }
+footer { padding-block: 22px; background: var(--panel); }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 25px; color: var(--muted); font-size: 12px; }
+@media (max-width: 1000px) {
+  .wrap { width: calc(100% - 64px); }
+  .reader-stage { min-height: 480px; }
+  .phone { --body-radius: 32px; width: min(195px, 72%); }
+}
+@media (max-width: 760px) {
+  .wrap { width: calc(100% - 36px); }
+  nav { gap: 6px 13px; }
+  .nav { padding-block: 7px; }
+  .hero { grid-template-columns: 1fr; gap: 26px; padding-block: 37px 42px; }
+  .hero h1 { font-size: clamp(34px, 9.5vw, 66px); }
+  .hero-copy > p:not(.status) { margin-bottom: 17px; }
+  .reader-stage { min-height: 413px; border-radius: 22px; }
+  .phone { --body-radius: 28px; width: min(166px, 65%); }
+  .features, .platforms { padding-block: 42px; }
+  .feature-grid, .card-reading, .platform-grid { grid-template-columns: 1fr; }
+  .card-reading .card-media { height: 240px; }
+  .card-media { height: 214px; }
+  .card-media .device { --body-radius: 32px; width: min(200px, 80%); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
-<body>
-<header class="site"><div class="inner">
-  <img src="images/icon.png" alt="">
-  <a class="name" href="index.html">Bible Nook</a>
-  <nav><a href="#features">Features</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
-</div></header>
+<body id="top">
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="images/icon.png" width="512" height="512" alt="">Bible Nook</a>
+    <nav aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#ipad">iPad</a>
+      <a href="#habit">Daily reading</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</header>
 <main>
-  <section class="hero">
-    <img class="icon" src="images/icon.png" alt="Bible Nook">
-    <h1>A quiet place<br>to read Scripture.</h1>
-    <p>Bible Nook turns pages like a real book, keeps your highlights and notes close, and helps you read a little every day.</p>
-    <a class="badge" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>Coming soon to the App Store</a>
-    <div class="phones">
-      <div class="phone"><img src="images/notes.png" alt="Notes and highlights"></div>
-      <div class="phone"><img src="images/reader.png" alt="Reading John 3, with the words of Jesus in red"></div>
-      <div class="phone"><img src="images/home.png" alt="Home, with a 14-day streak and a growing tree"></div>
+  <section class="wrap hero" aria-labelledby="headline">
+    <div class="hero-copy">
+      <h1 id="headline">A quiet place<br><span>to read Scripture.</span></h1>
+      <p>Turn pages like a real book, save the verses that stay with you, and make time to read a little every day.</p>
+      <div class="hero-actions">
+        <a class="button" href="#features">Explore Bible Nook</a>
+        <p class="status">Coming soon to the App Store</p>
+      </div>
+    </div>
+    <figure class="reader-stage">
+      <div class="device phone"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/reader.png" width="414" height="900" alt="The Bible Nook reader open to John 3, with the words of Jesus in red"><span class="device-island" aria-hidden="true"></span></div></div>
+      <figcaption>John 3 · King James Version</figcaption>
+    </figure>
+  </section>
+
+  <section class="features" id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <h2 id="features-title">Make Scripture part of your day.</h2>
+      <div class="feature-grid">
+        <article class="card-reading">
+          <div class="card-copy"><h3>Read like a real book</h3><p>Turn pages with your finger or open a two-page spread in landscape. Choose from the King James Version, Berean Standard Bible, and Reina-Valera 1909, on paper, linen, marble or dark pages.</p></div>
+          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/highlight.png" width="414" height="900" alt="A passage in the Bible Nook reader with the verse actions open" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
+        </article>
+        <article class="card-notes"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/notes.png" width="414" height="900" alt="Notes and highlights with bookmarks" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Keep the verses that stay with you</h3><p>Highlight in six colours, underline, heart a verse, or add a note. Bookmarks follow you from one translation to another.</p></div></article>
+        <article class="card-listen"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/listen.png" width="414" height="900" alt="A chapter being read aloud, each word lighting up as it is spoken" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Listen while you read</h3><p>Have any chapter read aloud in the voice you choose, each word lighting up as it is spoken. Set a reading timer for a quiet few minutes.</p></div></article>
+        <article class="card-reading card-cards">
+          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/notecards.png" width="414" height="900" alt="Notes shown as cards, grouped by date and filtered by book" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
+          <div class="card-copy"><h3>Every note, in one place</h3><p>Your notes appear as cards, newest first. Pin the ones you come back to, and narrow them down to a single book with one tap. Search finds any word in your notes and highlights.</p></div>
+        </article>
+      </div>
     </div>
   </section>
 
-  <section class="feature" id="features">
-    <div class="copy">
-      <span class="eyebrow">Reading</span>
-      <h2>Reads like a real book.</h2>
-      <p>Pages turn under your finger, and in landscape two pages sit side by side like an open Bible. The words of Jesus are in red.</p>
-      <p>King James Version, Berean Standard Bible and Reina-Valera 1909, on paper, linen, marble or dark pages.</p>
+  <section class="section" id="ipad" aria-labelledby="ipad-title">
+    <div class="wrap">
+      <h2 id="ipad-title">Made for iPad and Apple Pencil.</h2>
+      <p class="lede">Draw across a verse to select it, and a curved menu of colours and actions opens right at the tip of your Pencil.</p>
+      <article class="pencil">
+        <div class="card-copy">
+          <h3>Write in the margins</h3>
+          <p>Notes can be typed or handwritten, and a finger still turns the page while the Pencil marks it.</p>
+          <ul>
+            <li>Palm rejection while you write</li>
+            <li>Hover to preview, with haptic feedback</li>
+            <li>Arrow keys and trackpad turn pages</li>
+          </ul>
+        </div>
+        <div class="card-media"><img src="images/pencil.png" width="1100" height="807" alt="Apple Pencil's curved menu of highlight colours and actions over John 1 on iPad" loading="lazy"></div>
+      </article>
     </div>
-    <div class="art"><div class="phone"><img src="images/reader.png" alt=""></div></div>
   </section>
 
-  <section class="feature flip">
-    <div class="copy">
-      <span class="eyebrow">Study</span>
-      <h2>Mark what matters.</h2>
-      <p>Highlight in six colours, underline, heart a verse, or write a note — with Apple Pencil on iPad. Bookmarks follow you across translations.</p>
+  <section class="section alt" id="habit" aria-labelledby="habit-title">
+    <div class="wrap">
+      <h2 id="habit-title">Stay with it.</h2>
+      <p class="lede">Small, steady encouragement to come back tomorrow.</p>
+      <div class="feature-grid">
+        <article class="card-habit"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/home.png" width="414" height="900" alt="The home screen showing a reading streak and a growing tree" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Build a daily reading habit</h3><p>Follow a reading plan, see your streak, and watch your tree grow as you read through the Old and New Testaments.</p></div></article>
+        <article class="card-medals"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/medals.png" width="414" height="900" alt="A gallery of medals, earned and still to earn" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Medals worth earning</h3><p>Ninety-five medals for days read, hours spent, books finished and plans completed. Turn each one over in 3D to see when you earned it.</p></div></article>
+        <article class="card-watch">
+          <div class="card-media"><div class="watches">
+            <div class="watch-frame"><img src="images/watch2.png" alt="Today's reading on Apple Watch" loading="lazy"></div>
+            <div class="watch-frame"><img src="images/watch1.png" alt="The verse of the day on Apple Watch" loading="lazy"></div>
+          </div></div>
+          <div class="card-copy"><h3>On your Lock Screen and wrist</h3><p>Today's reading lives on your Lock Screen and in the Dynamic Island as you go. On Apple Watch, read a chapter, check it off, and see the verse of the day on your watch face.</p></div>
+        </article>
+        <article class="card-friends">
+          <div class="card-media"><div class="stack">
+            <div class="post"><div class="who"><span>🐑</span>Sarah<small>Today</small></div><q>Be still, and know that I am God.</q><div class="meta"><span>Psalms 46:10 · KJV</span><b>♥ 3</b></div></div>
+            <div class="post"><div class="who"><span>🦁</span>Daniel<small>14-day streak</small></div><q>Thy word is a lamp unto my feet.</q><div class="meta"><span>Psalms 119:105 · KJV</span><b>♥ 5</b></div></div>
+          </div></div>
+          <div class="card-copy"><h3>Read with friends</h3><p>Share a highlight, cheer on each other's streaks, and read a plan together. It's private to the people you invite, with blocking and reporting built in. Entirely optional.</p></div>
+        </article>
+      </div>
     </div>
-    <div class="art"><div class="phone"><img src="images/highlight.png" alt=""></div></div>
   </section>
 
-  <section class="feature">
-    <div class="copy">
-      <span class="eyebrow">Habit</span>
-      <h2>Grow a little every day.</h2>
-      <p>Follow a reading plan, keep a streak, and watch a tree grow as you read. Medals mark the milestones, and today's reading waits on your Lock Screen.</p>
+  <section class="platforms" aria-labelledby="platform-title">
+    <div class="wrap platform-grid">
+      <h2 id="platform-title">On iPhone, iPad, and Apple Watch.</h2>
+      <div>
+        <p>Your highlights, notes, plans and streak stay in step across every device through iCloud.</p>
+        <p>Free to use. No account, ads, or tracking.</p>
+      </div>
     </div>
-    <div class="art"><div class="phone"><img src="images/home.png" alt=""></div></div>
   </section>
 
-  <section class="feature flip">
-    <div class="copy">
-      <span class="eyebrow">iPad</span>
-      <h2>Room to read and write.</h2>
-      <p>A wide, calm page on iPad, with handwriting, a hardware keyboard and trackpad, and everything at a glance on Home.</p>
+  <section class="section alt" aria-labelledby="privacy-title">
+    <div class="wrap">
+      <h2 id="privacy-title">Yours alone.</h2>
+      <p class="lede">Bible Nook has no servers of its own. What you read and write stays with you.</p>
+      <div class="privacy">
+        <div><h3>No account</h3><p>Open the app and start reading. Nothing to sign up for.</p></div>
+        <div><h3>Your iCloud</h3><p>Notes and highlights sync through your own iCloud, which we can't see.</p></div>
+        <div><h3>No ads or tracking</h3><p>No analytics, no profiles, nothing sold. <a href="privacy.html">Privacy Policy</a></p></div>
+      </div>
     </div>
-    <div class="art"><div class="tablet"><img src="images/ipad-home.png" alt=""></div></div>
-  </section>
-
-  <section class="feature">
-    <div class="copy">
-      <span class="eyebrow">Apple Watch</span>
-      <h2>Today's reading, on your wrist.</h2>
-      <p>Read a chapter, check it off, and see the verse of the day — right from your watch face.</p>
-    </div>
-    <div class="art"><div class="watch"><img src="images/watch.png" alt=""></div></div>
-  </section>
-
-  <section class="grid">
-    <div class="card"><div class="ic">🗒️</div><h3>Notes as cards</h3><p>Pin favourites and filter by book.</p></div>
-    <div class="card"><div class="ic">👥</div><h3>Read with friends</h3><p>Share highlights and read a plan together — optional.</p></div>
-    <div class="card"><div class="ic">🌙</div><h3>Day and night</h3><p>Paper textures and dark pages that are easy on the eyes.</p></div>
-    <div class="card"><div class="ic">🔒</div><h3>Private by design</h3><p>No account, no ads, no tracking. It all stays in your iCloud.</p></div>
-  </section>
-
-  <section class="closing">
-    <h2 class="serif">Open the Word.</h2>
-    <p>Bible Nook is free on iPhone, iPad and Apple Watch.</p>
   </section>
 </main>
 <footer>
-  <span>© 2026 Jayson Correa</span>
-  <a href="support.html">Support</a>
-  <a href="privacy.html">Privacy Policy</a>
-  <a href="terms.html">Community Terms</a>
+  <div class="wrap footer-inner">
+    <span>© 2026 Jayson Correa</span>
+    <div class="footer-links">
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Community Terms</a>
+    </div>
+  </div>
 </footer>
 </body>
 </html>
