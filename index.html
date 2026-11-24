@@ -4,39 +4,93 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bible Nook</title>
-<meta name="description" content="A calm, beautiful Bible for iPhone, iPad and Apple Watch.">
+<meta name="description" content="A calm, beautiful Bible for iPhone, iPad and Apple Watch. Turn real pages, highlight, take notes and grow a daily reading habit.">
+<meta property="og:title" content="Bible Nook">
+<meta property="og:description" content="A quiet place to read Scripture, on iPhone, iPad and Apple Watch.">
+<meta property="og:image" content="https://biblenook.app/images/icon.png">
 <link rel="icon" href="images/icon.png">
+<link rel="apple-touch-icon" href="images/icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="site">
+<header class="site"><div class="inner">
   <img src="images/icon.png" alt="">
   <a class="name" href="index.html">Bible Nook</a>
-  <nav><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
-</header>
+  <nav><a href="#features">Features</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+</div></header>
 <main>
   <section class="hero">
-    <img class="icon" src="images/icon.png" alt="Bible Nook icon">
-    <h1 class="serif">A quiet place to read Scripture.</h1>
-    <p>Bible Nook turns pages like a real book, keeps your highlights and notes close, and helps you read a little every day — on iPhone, iPad and Apple Watch.</p>
-    <a class="badge" href="#">Download on the App Store</a>
+    <img class="icon" src="images/icon.png" alt="Bible Nook">
+    <h1>A quiet place<br>to read Scripture.</h1>
+    <p>Bible Nook turns pages like a real book, keeps your highlights and notes close, and helps you read a little every day.</p>
+    <a class="badge" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>Coming soon to the App Store</a>
+    <div class="phones">
+      <div class="phone"><img src="images/notes.png" alt="Notes and highlights"></div>
+      <div class="phone"><img src="images/reader.png" alt="Reading John 3, with the words of Jesus in red"></div>
+      <div class="phone"><img src="images/home.png" alt="Home, with a 14-day streak and a growing tree"></div>
+    </div>
   </section>
-  <div class="shots">
-    <img src="images/reader.png" alt="Reading John 3 with the words of Jesus in red">
-    <img src="images/home.png" alt="Home with the verse of the day, a reading streak and a growing tree">
-    <img src="images/notes.png" alt="Notes and highlights with bookmarks">
-  </div>
-  <section class="features">
-    <div class="card"><h3>Reads like a book</h3><p>Real page turns, two-page spreads in landscape, and words of Jesus in red. KJV, Berean Standard Bible and Reina-Valera 1909.</p></div>
-    <div class="card"><h3>Highlight and take notes</h3><p>Colours, underlines, handwritten notes with Apple Pencil, and bookmarks that follow you across translations.</p></div>
-    <div class="card"><h3>Build a daily habit</h3><p>Reading plans, a streak, a tree that grows as you read, and medals to earn — plus a Live Activity for today's reading.</p></div>
-    <div class="card"><h3>On your wrist</h3><p>Read today's chapters, check them off, and see the verse of the day on Apple Watch.</p></div>
-    <div class="card"><h3>Read with friends</h3><p>Optional Community: share highlights, see friends' streaks and read plans together, all through iCloud.</p></div>
-    <div class="card"><h3>Private by design</h3><p>No account and no tracking. Everything stays in your own iCloud.</p></div>
+
+  <section class="feature" id="features">
+    <div class="copy">
+      <span class="eyebrow">Reading</span>
+      <h2>Reads like a real book.</h2>
+      <p>Pages turn under your finger, and in landscape two pages sit side by side like an open Bible. The words of Jesus are in red.</p>
+      <p>King James Version, Berean Standard Bible and Reina-Valera 1909, on paper, linen, marble or dark pages.</p>
+    </div>
+    <div class="art"><div class="phone"><img src="images/reader.png" alt=""></div></div>
+  </section>
+
+  <section class="feature flip">
+    <div class="copy">
+      <span class="eyebrow">Study</span>
+      <h2>Mark what matters.</h2>
+      <p>Highlight in six colours, underline, heart a verse, or write a note — with Apple Pencil on iPad. Bookmarks follow you across translations.</p>
+    </div>
+    <div class="art"><div class="phone"><img src="images/highlight.png" alt=""></div></div>
+  </section>
+
+  <section class="feature">
+    <div class="copy">
+      <span class="eyebrow">Habit</span>
+      <h2>Grow a little every day.</h2>
+      <p>Follow a reading plan, keep a streak, and watch a tree grow as you read. Medals mark the milestones, and today's reading waits on your Lock Screen.</p>
+    </div>
+    <div class="art"><div class="phone"><img src="images/home.png" alt=""></div></div>
+  </section>
+
+  <section class="feature flip">
+    <div class="copy">
+      <span class="eyebrow">iPad</span>
+      <h2>Room to read and write.</h2>
+      <p>A wide, calm page on iPad, with handwriting, a hardware keyboard and trackpad, and everything at a glance on Home.</p>
+    </div>
+    <div class="art"><div class="tablet"><img src="images/ipad-home.png" alt=""></div></div>
+  </section>
+
+  <section class="feature">
+    <div class="copy">
+      <span class="eyebrow">Apple Watch</span>
+      <h2>Today's reading, on your wrist.</h2>
+      <p>Read a chapter, check it off, and see the verse of the day — right from your watch face.</p>
+    </div>
+    <div class="art"><div class="watch"><img src="images/watch.png" alt=""></div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="ic">🗒️</div><h3>Notes as cards</h3><p>Pin favourites and filter by book.</p></div>
+    <div class="card"><div class="ic">👥</div><h3>Read with friends</h3><p>Share highlights and read a plan together — optional.</p></div>
+    <div class="card"><div class="ic">🌙</div><h3>Day and night</h3><p>Paper textures and dark pages that are easy on the eyes.</p></div>
+    <div class="card"><div class="ic">🔒</div><h3>Private by design</h3><p>No account, no ads, no tracking. It all stays in your iCloud.</p></div>
+  </section>
+
+  <section class="closing">
+    <h2 class="serif">Open the Word.</h2>
+    <p>Bible Nook is free on iPhone, iPad and Apple Watch.</p>
   </section>
 </main>
 <footer>
-  <span>© 2026 Bible Nook</span>
+  <span>© 2026 Jayson Correa</span>
   <a href="support.html">Support</a>
   <a href="privacy.html">Privacy Policy</a>
   <a href="terms.html">Community Terms</a>
