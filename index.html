@@ -458,7 +458,9 @@ footer { padding-block: 22px; background: var(--panel); }
 /* The Pencil card: the curved menu shown on an iPad in its bezel, sitting in the card with room around it. */
 /* Zoomed in on the iPad's top-left corner, where the curved menu opens: the device runs off the card's
    right and bottom edges, like a close-up on Apple's pages. */
-.pencil .card-media { position: relative; padding: 0; overflow: hidden; align-self: stretch; min-height: 360px; }
+.pencil .card-media { position: relative; padding: 0; overflow: hidden; align-self: stretch; min-height: 360px;
+  margin: 14px; border-radius: 18px; isolation: isolate; -webkit-mask-image: -webkit-radial-gradient(white, black); }   /* rounded on every side; the mask keeps Safari clipping to the corners */
+.pencil .card-media::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }   /* a hairline so the rounded shape reads where the white screen meets the white page */
 /* Height from a padding spacer rather than aspect-ratio, which iPhone Safari can collapse to nothing on a grid item. */
 .pencil .card-media::before { content: ""; display: block; padding-top: 75%; }
 .pencil .card-media .pencil-ipad { position: absolute; left: 7%; top: 9%; width: 135%; margin: 0; }

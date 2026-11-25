@@ -40,13 +40,13 @@ function build() {
 
   // Body: a rounded slab whose bevel gives the soft edge all the way round.
   const body = new THREE.ExtrudeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), {
-    depth: D - 2 * EDGE_T, bevelEnabled: true, bevelThickness: EDGE_T, bevelSize: EDGE, bevelSegments: 10, curveSegments: 48,
+    depth: D - 2 * EDGE_T, bevelEnabled: true, bevelThickness: EDGE_T, bevelSize: EDGE, bevelSegments: 16, curveSegments: 96,
   });
   body.translate(0, 0, -(D - 2 * EDGE_T) / 2);
   g.add(new THREE.Mesh(body, metal));
 
   // Front glass, black where it isn't display.
-  const glass = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 48),
+  const glass = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 96),
     new THREE.MeshPhysicalMaterial({ color: 0x030303, roughness: .06, clearcoat: 1, clearcoatRoughness: .03 }));
   glass.position.z = D / 2 + .04;
   g.add(glass);
@@ -55,31 +55,39 @@ function build() {
   // The poster shows until the video has a frame, so the display is never blank.
   const tex = new THREE.VideoTexture(video);
   tex.colorSpace = THREE.SRGBColorSpace;
-  const poster = new THREE.TextureLoader().load(video.poster, () => { g.userData.redraw?.(); });
+  // The display starts plain white (never black) and shows the still once it has loaded.
+  const poster = new THREE.TextureLoader().load(video.poster, () => { if (!screenMat.map) { screenMat.map = poster; screenMat.needsUpdate = true; } g.userData.redraw?.(); });
   poster.colorSpace = THREE.SRGBColorSpace;
   // Safari draws a never-played video as black on a WebGL surface, so the still stays until it truly plays.
-  const screenMat = new THREE.MeshBasicMaterial({ map: poster, toneMapped: false });
+  const screenMat = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
   video.addEventListener('playing', () => { screenMat.map = tex; screenMat.needsUpdate = true; });
-  const screen = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(roundedRect(SW, SH, SR), 48), SW, SH), screenMat);
-  screen.position.z = D / 2 + .2;
+  const screen = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(roundedRect(SW, SH, SR), 96), SW, SH), screenMat);
+  screen.position.z = D / 2 + .25;
   g.add(screen);
 
   // White over the display for the page's fade between replays (the page sets --fade on the video's screen).
   const veil = new THREE.Mesh(screen.geometry, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
-  veil.position.z = D / 2 + .28;
+  veil.position.z = D / 2 + .5;
   g.add(veil);
   g.userData.veil = veil;
 
   // The Dynamic Island, cut into the top of the display as on the real phone (126 × 37 pt, 11 pt from the
   // top edge of a 402-pt-wide screen), above the page fade so it never turns white.
   const pt = SW / 402, IW = 126 * pt, IH = 37 * pt;
-  const island = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(IW, IH, IH / 2 - .01), 32),
+  const island = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(IW, IH, IH / 2 - .01), 64),
     new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false }));
-  island.position.set(0, SH / 2 - 11 * pt - IH / 2, D / 2 + .34);
+  island.position.set(0, SH / 2 - 11 * pt - IH / 2, D / 2 + .75);
   g.add(island);
 
+  // Glass, display, fade and island lie a fraction of a millimetre apart; iPhone GPUs can't always tell
+  // which is in front, so each is lifted towards the camera and drawn in a fixed order.
+  [glass, screen, veil, island].forEach((m, i) => {
+    m.renderOrder = 10 + i;
+    Object.assign(m.material, { polygonOffset: true, polygonOffsetFactor: -2 * (i + 1), polygonOffsetUnits: -8 * (i + 1) });
+  });
+
   // A faint reflection on the cover glass, added over the display.
-  const sheen = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 48),
+  const sheen = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 96),
     new THREE.MeshStandardMaterial({ color: 0x000000, roughness: .08, metalness: 0, transparent: true,
       blending: THREE.AdditiveBlending, depthWrite: false, envMapIntensity: .45 }));
   sheen.position.z = D / 2 + .36;
@@ -102,10 +110,10 @@ function start() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || navigator.connection?.saveData) return;
   if ((navigator.deviceMemory && navigator.deviceMemory < 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4)) return;
   let renderer;
-  // Dense screens don't need MSAA, which costs a lot on phones.
-  try { renderer = new THREE.WebGLRenderer({ antialias: devicePixelRatio < 2, alpha: true, powerPreference: 'high-performance' }); }
+  // Edge smoothing on, at the screen's full resolution.
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
   catch { return; }                                                       // no WebGL: the CSS phone stays
-  renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 3));   // full Retina sharpness: it's the first thing people see
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
