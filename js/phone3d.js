@@ -153,20 +153,33 @@ function start() {
     const tick = () => { videoFrames++; video.requestVideoFrameCallback(tick); };
     video.requestVideoFrameCallback(tick);
   }
+  // The pose follows the scroll on its own: each frame it works out where the phone should be (the same
+  // curve the page used) and glides there, so a late or skipped scroll frame on iPhone becomes a slight
+  // smoothing instead of a visible jump.
+  const intro = stage.parentElement;
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const mix = (a, b, t) => a + (b - a) * t;
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+  const cur = { rx: 52, ry: -24, rz: 14, ty: .34 * h, s: .9 }; let lastT = performance.now(), first = true;
   function frame() {
-    const st = phone.style;
-    const pose = st.getPropertyValue('--rx') + st.getPropertyValue('--ry') + st.getPropertyValue('--rz') + st.getPropertyValue('--ty') + st.getPropertyValue('--s');
-    const vid = 'requestVideoFrameCallback' in video ? videoFrames : (video.paused ? -1 : performance.now());
+    const now = performance.now(), dt = Math.min(64, now - lastT); lastT = now;
+    const r = intro.getBoundingClientRect(), sh = stage.offsetHeight;
+    const e = ease(clamp01(clamp01(-r.top / (r.height - sh)) / .8));
+    const tgt = { rx: mix(52, 0, e), ry: mix(-24, 0, e), rz: mix(14, 0, e), ty: mix(34, 4, e) * sh / 100, s: mix(.9, 1.08, e) };
+    const f = first ? 1 : 1 - Math.exp(-dt / 70); first = false;
+    let moving = false;
+    for (const key in tgt) {
+      const d = tgt[key] - cur[key];
+      if (Math.abs(d) > (key === 'ty' ? .05 : .001)) { cur[key] += d * f; moving = true; } else cur[key] = tgt[key];
+    }
+    const vid = 'requestVideoFrameCallback' in video ? videoFrames : (video.paused ? -1 : now);
     const fade = video.parentElement.style.getPropertyValue('--fade') || '0';
-    const key = pose + '|' + vid + '|' + fade;
-    if (key === last) return;
+    const key = vid + '|' + fade;
+    if (!moving && key === last) return;
     last = key;
-    const rx = num(st.getPropertyValue('--rx')), ry = num(st.getPropertyValue('--ry')), rz = num(st.getPropertyValue('--rz'));
-    const tyRaw = st.getPropertyValue('--ty').trim(), s = num(st.getPropertyValue('--s')) || 1;
-    const ty = tyRaw.endsWith('vh') ? num(tyRaw) * h / 100 : num(tyRaw);   // svh: the pinned stage is 100svh tall
-    model.position.set(cx - w / 2, h / 2 - cy - ty, 0);
-    model.rotation.set(-rx * Math.PI / 180, ry * Math.PI / 180, -rz * Math.PI / 180, 'XYZ');   // CSS is y-down
-    model.scale.setScalar(k * s);
+    model.position.set(cx - w / 2, h / 2 - cy - cur.ty, 0);
+    model.rotation.set(-cur.rx * Math.PI / 180, cur.ry * Math.PI / 180, -cur.rz * Math.PI / 180, 'XYZ');   // CSS is y-down
+    model.scale.setScalar(k * cur.s);
     model.userData.veil.material.opacity = num(fade);
     model.userData.veil.visible = num(fade) > 0;
     renderer.render(scene, camera);

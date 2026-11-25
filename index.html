@@ -450,6 +450,18 @@ footer { padding-block: 22px; background: var(--panel); }
 .hero-phone.as-3d { transform: none !important; will-change: auto; }
 .hero-phone.as-3d .edge3d, .hero-phone.as-3d::after, .hero-phone.as-3d .screen::after { display: none; }
 .intro .glow { will-change: opacity; }
+/* Apple-style arrivals: headings, text and cards rise and fade in as they come into view. Only set up by
+   the script, so without it everything simply shows. */
+.rise { opacity: 0; transform: translateY(56px) scale(.985); transition: opacity .9s cubic-bezier(.33,1,.68,1), transform 1.15s cubic-bezier(.33,1,.68,1); }
+.rise.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rise { opacity: 1; transform: none; transition: none; } }
+/* The Pencil card: the curved menu shown on an iPad in its bezel, sitting in the card with room around it. */
+/* Zoomed in on the iPad's top-left corner, where the curved menu opens: the device runs off the card's
+   right and bottom edges, like a close-up on Apple's pages. */
+.pencil .card-media { position: relative; padding: 0; overflow: hidden; align-self: stretch; min-height: 360px; aspect-ratio: 4 / 3; }
+.pencil .card-media .pencil-ipad { position: absolute; left: 7%; top: 9%; width: 135%; margin: 0; }
+@media (max-width: 760px) { .pencil .card-media { min-height: 0; } .pencil .card-media .pencil-ipad { left: 6%; top: 8%; width: 112%; } }
+.pencil-ipad .screen img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
 </head>
@@ -458,9 +470,6 @@ footer { padding-block: 22px; background: var(--panel); }
   <div class="wrap nav">
     <a class="brand" href="#top"><img src="images/n-e47c85ccf6.png" width="512" height="512" alt="">Bible Nook</a>
     <nav aria-label="Main navigation">
-      <a href="#features">Features</a>
-      <a href="#ipad">iPad</a>
-      <a href="#habit">Daily reading</a>
       <a href="support.html">Support</a>
       <a href="privacy.html">Privacy</a>
     </nav>
@@ -479,7 +488,7 @@ footer { padding-block: 22px; background: var(--panel); }
         <div class="slab"></div><div class="slab s2"></div>
         <span class="btn action"></span><span class="btn vup"></span><span class="btn vdown"></span><span class="btn power"></span><span class="btn capture"></span>
         <div class="band"><div class="bezel"><div class="screen">
-          <video class="screen-video" id="heroVideo" poster="images/iphone-turn.jpg" muted playsinline preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper"><source src="images/iphone-turn-480.mp4" media="(max-width: 700px)"><source src="images/iphone-turn.mp4"></video>
+          <video class="screen-video" id="heroVideo" poster="images/iphone-turn.jpg?v=3" muted playsinline preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper" src="images/iphone-turn.mp4?v=3"></video>
           <span class="island"></span>
         </div></div></div>
       </div>
@@ -517,7 +526,7 @@ footer { padding-block: 22px; background: var(--panel); }
       <h2 id="spread-title" class="big reveal">An open book.</h2>
       <p class="lede-dark reveal">Turn iPad on its side and it becomes a book: two pages, <b>a real page turn</b>, and nothing else on the screen.</p>
       <div class="ipad" id="spreadIpad">
-        <div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="spreadVideo" src="images/ipad-turn.mp4" poster="images/ipad-turn.jpg" muted playsinline preload="metadata" aria-label="Turning a page on iPad in landscape, with two facing pages"></video></div></div></div>
+        <div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="spreadVideo" src="images/ipad-turn.mp4?v=3" poster="images/ipad-turn.jpg?v=3" muted playsinline preload="metadata" aria-label="Turning a page on iPad in landscape, with two facing pages"></video></div></div></div>
         <span class="cam"></span>
       </div>
     </div>
@@ -529,7 +538,7 @@ footer { padding-block: 22px; background: var(--panel); }
       <p class="lede-dark reveal">Draw across a verse and a few colours appear at the tip of your Pencil. Choose one, and the page is quiet again.</p>
       <div class="ipad pen-stage" id="penStage" role="img" aria-label="Recording of Bible Nook: Apple Pencil draws across Acts 5:3, the curved colour menu opens at its tip, and pink fills the verse">
         <div class="band"><div class="bezel"><div class="screen">
-          <video class="screen-video" id="penVideo" src="images/ipad-pencil.mp4" poster="images/ipad-pencil.jpg" muted playsinline preload="metadata" aria-hidden="true"></video>
+          <video class="screen-video" id="penVideo" src="images/ipad-pencil.mp4?v=3" poster="images/ipad-pencil.jpg?v=3" muted playsinline preload="metadata" aria-hidden="true"></video>
         </div></div></div>
         <span class="cam"></span>
                 <div class="pen-shadow" id="penShadow"></div>
@@ -568,7 +577,7 @@ footer { padding-block: 22px; background: var(--panel); }
             <li>A keyboard or trackpad turns the page</li>
           </ul>
         </div>
-        <div class="card-media"><img src="images/n-94c3167642.png" width="1100" height="807" alt="Apple Pencil's curved menu of highlight colours and actions over John 1 on iPad" loading="lazy"></div>
+        <div class="card-media"><div class="ipad pencil-ipad"><div class="band"><div class="bezel"><div class="screen"><img src="images/ipad-menu.jpg" width="1600" height="1103" alt="Bible Nook on iPad: the curved menu of highlight colours and actions open at the Pencil tip over Acts 5" loading="lazy"></div></div></div></div></div>
       </article>
     </div>
   </section>
@@ -578,7 +587,7 @@ footer { padding-block: 22px; background: var(--panel); }
       <h2 id="lineup-title" class="big reveal">Pick up where<br>you left off.</h2>
       <p class="lede-dark reveal">Your place comes with you to <b>whichever device is in your hand</b>, so the next chapter is always a moment away.</p>
       <div class="lineup-stage" id="lineup">
-        <div class="ipad"><div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="lineupVideo" src="images/ipad-highlight.mp4" poster="images/ipad-highlight.jpg" muted playsinline preload="metadata" aria-label="Selecting Acts 5:16 on iPad: the words shimmer in rainbow colours, then the chosen colour washes in"></video></div></div></div><span class="cam"></span></div>
+        <div class="ipad"><div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="lineupVideo" src="images/ipad-highlight.mp4?v=3" poster="images/ipad-highlight.jpg?v=3" muted playsinline preload="metadata" aria-label="Selecting Acts 5:16 on iPad: the words shimmer in rainbow colours, then the chosen colour washes in"></video></div></div></div><span class="cam"></span></div>
         <div class="watch"><span class="crown"></span><span class="side"></span><div class="case"><div class="glass"><img src="images/n-bc7745f608.png" alt="Today's reading on Apple Watch" loading="lazy"></div></div></div>
         <div class="iphone">
           <div class="slab"></div>
@@ -675,6 +684,20 @@ footer { padding-block: 22px; background: var(--panel); }
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .2 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
+  /* ---------- Cards and headings rise in as you reach them ---------- */
+  if (!reduce) {
+    const pick = 'main > section:not(.stage) :is(.wrap > h2, .wrap > p, .feature-grid > article, article.pencil, .platform-grid > *, .duo-figure, .privacy > *)';
+    const rise = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); rise.unobserve(e.target); }
+    }), { threshold: .12, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll(pick).forEach(el => {
+      const sibs = [...el.parentElement.children].filter(c => c.matches(pick));
+      const i = sibs.indexOf(el);
+      if (el.matches('article, .privacy > *')) el.style.transitionDelay = (i % 2) * 110 + 'ms';   // cards side by side arrive one after the other
+      el.classList.add('rise'); rise.observe(el);
+    });
+  }
+
   /* ---------- Scroll-linked hardware ---------- */
   const intro = $('intro'), phone = $('heroPhone'), copy = $('introCopy'), glow = $('glow');
   const spread = $('spreadIpad'), lineup = $('lineup');
@@ -684,20 +707,39 @@ footer { padding-block: 22px; background: var(--panel); }
     // stage (a steady 100svh), not the window, which grows and shrinks as Safari's address bar moves.
     const r = intro.getBoundingClientRect(), stageH = intro.firstElementChild.offsetHeight;
     const p = clamp(-r.top / (r.height - stageH)), e = easeInOut(clamp(p / .8));
-    phone.style.setProperty('--rx', lerp(52, 0, e) + 'deg');
-    phone.style.setProperty('--ry', lerp(-24, 0, e) + 'deg');
-    phone.style.setProperty('--rz', lerp(14, 0, e) + 'deg');
-    phone.style.setProperty('--ty', lerp(34, 4, e) + 'svh');
-    phone.style.setProperty('--s', lerp(.9, 1.08, e));
+    if (!phone.classList.contains('as-3d')) {        // the 3D phone follows the scroll by itself
+      phone.style.setProperty('--rx', lerp(52, 0, e) + 'deg');
+      phone.style.setProperty('--ry', lerp(-24, 0, e) + 'deg');
+      phone.style.setProperty('--rz', lerp(14, 0, e) + 'deg');
+      phone.style.setProperty('--ty', lerp(34, 4, e) + 'svh');
+      phone.style.setProperty('--s', lerp(.9, 1.08, e));
+    }
     const c = clamp((p - .25) / .3);
     copy.style.opacity = 1 - c; copy.style.transform = `translateY(${-c * 60}px) scale(${1 - c * .06})`;
     glow.style.setProperty('--glow', e);
     // iPad lifts up off the table
     const s = spread.getBoundingClientRect();
-    spread.style.setProperty('--tilt', 58 * (1 - easeOut(clamp((vh - s.top) / (vh * .85)))) + 'deg');
+    glide.tilt.to = 58 * (1 - easeOut(clamp((vh - s.top) / (vh * .85))));
     // Lineup: devices drift into place
     const l = lineup.getBoundingClientRect();
-    lineup.style.setProperty('--p', easeOut(clamp((vh - l.top) / (vh * .9))));
+    glide.lp.to = easeOut(clamp((vh - l.top) / (vh * .9)));
+    startGlide();
+  }
+  // The iPad's tilt and the device group ease toward where the scroll puts them (about 80 ms behind), so
+  // uneven scroll updates on phones read as smooth motion rather than steps.
+  const glide = { tilt: { el: spread, prop: '--tilt', unit: 'deg', at: null, to: 58 }, lp: { el: lineup, prop: '--p', unit: '', at: null, to: 0 } };
+  let gliding = false, gT = 0;
+  function startGlide() { if (!gliding) { gliding = true; gT = performance.now(); requestAnimationFrame(glideStep); } }
+  function glideStep(now) {
+    const f = 1 - Math.exp(-Math.min(64, now - gT) / 80); gT = now;
+    let busy = false;
+    for (const g of Object.values(glide)) {
+      if (g.at === null) g.at = g.to;
+      const d = g.to - g.at;
+      if (Math.abs(d) > .0005) { g.at += d * f; busy = true; } else g.at = g.to;
+      g.el.style.setProperty(g.prop, g.at.toFixed(4) + g.unit);
+    }
+    if (busy) requestAnimationFrame(glideStep); else gliding = false;
   }
   if (!reduce) {
     let ticking = false;
