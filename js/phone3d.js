@@ -126,18 +126,27 @@ function start() {
   addEventListener('resize', size);
 
   // The CSS phone's untransformed centre and its body's width in pixels change only on resize.
-  let cx = 0, cy = 0, k = 1;
+  let cx = 0, cy = 0, k = 1, last = '';
+  // Measured on screen against the canvas itself (the flat phone has no transform while 3D is on), so the
+  // model sits exactly where the page centres the phone, whatever the browser's offset rules.
   function layout() {
-    cx = phone.offsetLeft + phone.offsetWidth / 2; cy = phone.offsetTop + phone.offsetHeight / 2;
-    k = phone.offsetWidth * .96345 / W;
+    const p = phone.getBoundingClientRect(), c = canvas.getBoundingClientRect();
+    cx = p.left - c.left + p.width / 2; cy = p.top - c.top + p.height / 2;
+    k = p.width * .96345 / W;
   }
-  layout();
-  new ResizeObserver(() => { layout(); last = ''; }).observe(phone);
+  phone.classList.add('as-3d');                       // drop the flat phone's transform before measuring
+  const relayout = () => { size(); layout(); last = ''; };
+  relayout();
+  new ResizeObserver(relayout).observe(stage);
+  new ResizeObserver(relayout).observe(phone);
+  addEventListener('resize', relayout);
+  addEventListener('load', relayout);
+  document.fonts?.ready.then(relayout);
   model.userData.redraw = () => { last = ''; };
 
   // Draw only when something changed: the scroll pose (inline vars set by the page) or a new video frame.
   const num = (v) => parseFloat(v) || 0;
-  let last = '', videoFrames = 0;
+  let videoFrames = 0;
   if ('requestVideoFrameCallback' in video) {
     const tick = () => { videoFrames++; video.requestVideoFrameCallback(tick); };
     video.requestVideoFrameCallback(tick);
@@ -167,4 +176,10 @@ function start() {
   phone.classList.add('as-3d');
 }
 
-start();
+// If anything in the 3D set-up fails, the flat phone stays visible rather than leaving an empty stage.
+try { start(); }
+catch (err) {
+  console.warn('3D iPhone unavailable, showing the flat phone', err);
+  phone?.classList.remove('as-3d');
+  stage?.querySelector('.phone-canvas')?.remove();
+}
