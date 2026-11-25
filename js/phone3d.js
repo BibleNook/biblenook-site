@@ -57,11 +57,18 @@ function build() {
   tex.colorSpace = THREE.SRGBColorSpace;
   const poster = new THREE.TextureLoader().load(video.poster, () => { g.userData.redraw?.(); });
   poster.colorSpace = THREE.SRGBColorSpace;
-  const screenMat = new THREE.MeshBasicMaterial({ map: video.readyState >= 2 ? tex : poster, toneMapped: false });
+  // Safari draws a never-played video as black on a WebGL surface, so the still stays until it truly plays.
+  const screenMat = new THREE.MeshBasicMaterial({ map: poster, toneMapped: false });
   video.addEventListener('playing', () => { screenMat.map = tex; screenMat.needsUpdate = true; });
   const screen = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(roundedRect(SW, SH, SR), 48), SW, SH), screenMat);
   screen.position.z = D / 2 + .2;
   g.add(screen);
+
+  // White over the display for the page's fade between replays (the page sets --fade on the video's screen).
+  const veil = new THREE.Mesh(screen.geometry, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+  veil.position.z = D / 2 + .28;
+  g.add(veil);
+  g.userData.veil = veil;
 
   // A faint reflection on the cover glass, added over the display.
   const sheen = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 48),
@@ -87,7 +94,8 @@ function start() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || navigator.connection?.saveData) return;
   if ((navigator.deviceMemory && navigator.deviceMemory < 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4)) return;
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  // Dense screens don't need MSAA, which costs a lot on phones.
+  try { renderer = new THREE.WebGLRenderer({ antialias: devicePixelRatio < 2, alpha: true, powerPreference: 'high-performance' }); }
   catch { return; }                                                       // no WebGL: the CSS phone stays
   renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -138,7 +146,8 @@ function start() {
     const st = phone.style;
     const pose = st.getPropertyValue('--rx') + st.getPropertyValue('--ry') + st.getPropertyValue('--rz') + st.getPropertyValue('--ty') + st.getPropertyValue('--s');
     const vid = 'requestVideoFrameCallback' in video ? videoFrames : (video.paused ? -1 : performance.now());
-    const key = pose + '|' + vid;
+    const fade = video.parentElement.style.getPropertyValue('--fade') || '0';
+    const key = pose + '|' + vid + '|' + fade;
     if (key === last) return;
     last = key;
     const rx = num(st.getPropertyValue('--rx')), ry = num(st.getPropertyValue('--ry')), rz = num(st.getPropertyValue('--rz'));
@@ -147,6 +156,8 @@ function start() {
     model.position.set(cx - w / 2, h / 2 - cy - ty, 0);
     model.rotation.set(-rx * Math.PI / 180, ry * Math.PI / 180, -rz * Math.PI / 180, 'XYZ');   // CSS is y-down
     model.scale.setScalar(k * s);
+    model.userData.veil.material.opacity = num(fade);
+    model.userData.veil.visible = num(fade) > 0;
     renderer.render(scene, camera);
   }
 

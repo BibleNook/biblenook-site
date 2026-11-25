@@ -444,6 +444,12 @@ footer { padding-block: 22px; background: var(--panel); }
 .duo { filter: drop-shadow(0 18px 28px rgba(0,0,0,.14)); }
 @media (max-width: 700px) { .duo-pair { flex-direction: column; gap: 28px; } .duo-closed { width: 52%; } .duo-open { width: 100%; } }
 .duo-figure figcaption { margin-top: 22px; color: var(--secondary); font-size: 17px; }
+.screen-fade { position: absolute; inset: 0; z-index: 3; background: #fff; opacity: 0; pointer-events: none; }
+/* Phones: once the 3D iPhone has taken over, the CSS phone underneath only lays out and plays the video,
+   so it gives up its 3D transform, depth layers and bezel art (nothing to composite on every scroll frame). */
+.hero-phone.as-3d { transform: none !important; will-change: auto; }
+.hero-phone.as-3d .edge3d, .hero-phone.as-3d::after, .hero-phone.as-3d .screen::after { display: none; }
+.intro .glow { will-change: opacity; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
 </head>
@@ -473,12 +479,37 @@ footer { padding-block: 22px; background: var(--panel); }
         <div class="slab"></div><div class="slab s2"></div>
         <span class="btn action"></span><span class="btn vup"></span><span class="btn vdown"></span><span class="btn power"></span><span class="btn capture"></span>
         <div class="band"><div class="bezel"><div class="screen">
-          <video class="screen-video" src="images/iphone-turn.mp4" poster="images/iphone-turn.jpg" muted playsinline loop preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper"></video>
+          <video class="screen-video" id="heroVideo" src="images/iphone-turn.mp4" poster="images/iphone-turn.jpg" muted playsinline preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper"></video>
           <span class="island"></span>
         </div></div></div>
       </div>
     </div>
   </section>
+
+
+
+
+
+  
+
+  <section class="features" id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <h2 id="features-title">Less to manage. More time in the Word.</h2>
+      <div class="feature-grid">
+        <article class="card-reading">
+          <div class="card-copy"><h3>Nothing between you and the page</h3><p>Pages that turn like paper, in the King James Version, Berean Standard Bible or Reina-Valera 1909. No feeds, no ads, no noise.</p></div>
+          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-25fe7604a3.png" width="414" height="900" alt="A passage in the Bible Nook reader with the verse actions open" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
+        </article>
+        <article class="card-notes"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-8f8616451f.png" width="414" height="900" alt="Notes and highlights with bookmarks" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Keep the verses that stay with you</h3><p>A colour, an underline or a few words in the margin: simple ways to remember what spoke to you, and find it again.</p></div></article>
+        <article class="card-listen"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-e3421ece5f.png" width="414" height="900" alt="A chapter being read aloud, each word lighting up as it is spoken" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>When your eyes need rest</h3><p>Let any chapter be read aloud, each word lighting up as it is spoken. Set a timer for a quiet few minutes.</p></div></article>
+        <article class="card-reading card-cards">
+          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-7433d5ead1.png" width="414" height="900" alt="Notes shown as cards, grouped by date and filtered by book" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
+          <div class="card-copy"><h3>Your reflections, gathered</h3><p>Every note in one calm place, newest first. Pin the ones you return to, and find any word you wrote.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
 
   <section class="stage spread" aria-labelledby="spread-title">
     <div class="wrap">
@@ -486,12 +517,11 @@ footer { padding-block: 22px; background: var(--panel); }
       <h2 id="spread-title" class="big reveal">An open book.</h2>
       <p class="lede-dark reveal">Turn iPad on its side and it becomes a book: two pages, <b>a real page turn</b>, and nothing else on the screen.</p>
       <div class="ipad" id="spreadIpad">
-        <div class="band"><div class="bezel"><div class="screen"><video class="screen-video" src="images/ipad-turn.mp4" poster="images/ipad-turn.jpg" muted playsinline loop preload="metadata" aria-label="Turning a page on iPad in landscape, with two facing pages"></video></div></div></div>
+        <div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="spreadVideo" src="images/ipad-turn.mp4" poster="images/ipad-turn.jpg" muted playsinline preload="metadata" aria-label="Turning a page on iPad in landscape, with two facing pages"></video></div></div></div>
         <span class="cam"></span>
       </div>
     </div>
   </section>
-
   <section class="stage pencil-scene" aria-labelledby="pencil-title">
     <div class="wrap">
       <span class="eyebrow-dark reveal">Apple Pencil</span>
@@ -524,45 +554,6 @@ footer { padding-block: 22px; background: var(--panel); }
       <button class="replay" id="replay" type="button">↻ Play again</button>
     </div>
   </section>
-
-  <section class="stage lineup" aria-labelledby="lineup-title">
-    <div class="wrap">
-      <span class="eyebrow-dark reveal">iPhone · iPad · Apple Watch</span>
-      <h2 id="lineup-title" class="big reveal">Pick up where<br>you left off.</h2>
-      <p class="lede-dark reveal">Your place comes with you to <b>whichever device is in your hand</b>, so the next chapter is always a moment away.</p>
-      <div class="lineup-stage" id="lineup">
-        <div class="ipad"><div class="band"><div class="bezel"><div class="screen"><video class="screen-video" src="images/ipad-highlight.mp4" poster="images/ipad-highlight.jpg" muted playsinline loop preload="metadata" aria-label="Selecting Acts 5:16 on iPad: the words shimmer in rainbow colours, then the chosen colour washes in"></video></div></div></div><span class="cam"></span></div>
-        <div class="watch"><span class="crown"></span><span class="side"></span><div class="case"><div class="glass"><img src="images/n-bc7745f608.png" alt="Today's reading on Apple Watch" loading="lazy"></div></div></div>
-        <div class="iphone">
-          <div class="slab"></div>
-          <span class="btn action"></span><span class="btn vup"></span><span class="btn vdown"></span><span class="btn power"></span>
-          <div class="band"><div class="bezel"><div class="screen"><img src="images/n-a1ee7d94f7.png" alt="The Bible Nook home screen with a reading streak" loading="lazy"><span class="island"></span></div></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  
-
-  <section class="features" id="features" aria-labelledby="features-title">
-    <div class="wrap">
-      <h2 id="features-title">Less to manage. More time in the Word.</h2>
-      <div class="feature-grid">
-        <article class="card-reading">
-          <div class="card-copy"><h3>Nothing between you and the page</h3><p>Pages that turn like paper, in the King James Version, Berean Standard Bible or Reina-Valera 1909. No feeds, no ads, no noise.</p></div>
-          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-25fe7604a3.png" width="414" height="900" alt="A passage in the Bible Nook reader with the verse actions open" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
-        </article>
-        <article class="card-notes"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-8f8616451f.png" width="414" height="900" alt="Notes and highlights with bookmarks" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>Keep the verses that stay with you</h3><p>A colour, an underline or a few words in the margin: simple ways to remember what spoke to you, and find it again.</p></div></article>
-        <article class="card-listen"><div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-e3421ece5f.png" width="414" height="900" alt="A chapter being read aloud, each word lighting up as it is spoken" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div><div class="card-copy"><h3>When your eyes need rest</h3><p>Let any chapter be read aloud, each word lighting up as it is spoken. Set a timer for a quiet few minutes.</p></div></article>
-        <article class="card-reading card-cards">
-          <div class="card-media"><div class="device"><span class="device-control device-control-action" aria-hidden="true"></span><span class="device-control device-control-volume-up" aria-hidden="true"></span><span class="device-control device-control-volume-down" aria-hidden="true"></span><span class="device-control device-control-power" aria-hidden="true"></span><div class="device-screen"><img src="images/n-7433d5ead1.png" width="414" height="900" alt="Notes shown as cards, grouped by date and filtered by book" loading="lazy"><span class="device-island" aria-hidden="true"></span></div></div></div>
-          <div class="card-copy"><h3>Your reflections, gathered</h3><p>Every note in one calm place, newest first. Pin the ones you return to, and find any word you wrote.</p></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <section class="section" id="ipad" aria-labelledby="ipad-title">
     <div class="wrap">
       <h2 id="ipad-title">Room to think.</h2>
@@ -581,7 +572,22 @@ footer { padding-block: 22px; background: var(--panel); }
       </article>
     </div>
   </section>
-
+  <section class="stage lineup" aria-labelledby="lineup-title">
+    <div class="wrap">
+      <span class="eyebrow-dark reveal">iPhone · iPad · Apple Watch</span>
+      <h2 id="lineup-title" class="big reveal">Pick up where<br>you left off.</h2>
+      <p class="lede-dark reveal">Your place comes with you to <b>whichever device is in your hand</b>, so the next chapter is always a moment away.</p>
+      <div class="lineup-stage" id="lineup">
+        <div class="ipad"><div class="band"><div class="bezel"><div class="screen"><video class="screen-video" id="lineupVideo" src="images/ipad-highlight.mp4" poster="images/ipad-highlight.jpg" muted playsinline preload="metadata" aria-label="Selecting Acts 5:16 on iPad: the words shimmer in rainbow colours, then the chosen colour washes in"></video></div></div></div><span class="cam"></span></div>
+        <div class="watch"><span class="crown"></span><span class="side"></span><div class="case"><div class="glass"><img src="images/n-bc7745f608.png" alt="Today's reading on Apple Watch" loading="lazy"></div></div></div>
+        <div class="iphone">
+          <div class="slab"></div>
+          <span class="btn action"></span><span class="btn vup"></span><span class="btn vdown"></span><span class="btn power"></span>
+          <div class="band"><div class="bezel"><div class="screen"><img src="images/n-a1ee7d94f7.png" alt="The Bible Nook home screen with a reading streak" loading="lazy"><span class="island"></span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
   <section class="section alt" id="habit" aria-labelledby="habit-title">
     <div class="wrap">
       <h2 id="habit-title">Stay with it.</h2>
@@ -694,7 +700,7 @@ footer { padding-block: 22px; background: var(--panel); }
   }
   if (!reduce) {
     let ticking = false;
-    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { onScroll(); ticking = false; }); } }, { passive: true });
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { cueClips(); onScroll(); ticking = false; }); } }, { passive: true });
     addEventListener('resize', onScroll); onScroll();
   }
 
@@ -750,8 +756,55 @@ footer { padding-block: 22px; background: var(--panel); }
   new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) play(); }), { threshold: .55 }).observe(stage);
   $('replay').addEventListener('click', play);
   addEventListener('resize', () => box && measure());
-  const vio = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reduce) v.play().catch(() => {}); else v.pause(); }), { threshold: .35 });
-  document.querySelectorAll('.screen-video:not(#penVideo)').forEach(v => vio.observe(v));
+  /* ---------- Clips: play on their cue; the page turns replay after a fade to white ---------- */
+  // Each clip waits for its cue and plays through. The page-turn clips then rest on the last page,
+  // fade to white, return to the first page and play again for as long as they're on screen.
+  // Off screen, a clip quietly rewinds, so it starts fresh the next time you scroll to it.
+  const clips = [
+    { v: $('heroVideo'), area: $('intro'), replay: true },
+    { v: $('spreadVideo'), area: spread, replay: true },
+    { v: $('lineupVideo'), area: lineup },
+  ].filter(c => c.v).map(c => Object.assign(c, { played: false, gen: 0 }));
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  clips.forEach(c => {
+    const scr = c.v.parentElement;
+    c.veil = document.createElement('span'); c.veil.className = 'screen-fade'; scr.appendChild(c.veil);
+    c.setFade = f => { c.veil.style.opacity = f; scr.style.setProperty('--fade', f); };    // --fade is read by the 3D iPhone
+    c.fade = (from, to, ms) => new Promise(done => {
+      const t0 = performance.now();
+      const step = now => { const k = clamp((now - t0) / ms); c.setFade(lerp(from, to, easeInOut(k))); k < 1 ? requestAnimationFrame(step) : done(); };
+      requestAnimationFrame(step);
+    });
+    if (c.replay) c.v.addEventListener('ended', async () => {
+      const g = c.gen;
+      await wait(2600); if (g !== c.gen) return;
+      await c.fade(0, 1, 420); if (g !== c.gen) return;
+      c.v.currentTime = 0;
+      await new Promise(r => c.v.addEventListener('seeked', r, { once: true }));
+      await wait(120); await c.fade(1, 0, 420); if (g !== c.gen) return;
+      await wait(700); if (g === c.gen) c.v.play().catch(() => {});
+    });
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) { c.gen++; c.v.pause(); c.v.currentTime = 0; c.played = false; c.setFade(0); }
+    }).observe(c.area);
+  });
+  function cue(c, ready) {
+    if (reduce || !c) return;
+    if (ready && !c.played) { c.played = true; c.gen++; c.setFade(0); c.v.currentTime = 0; c.v.play().catch(() => { c.played = false; }); }
+  }
+  const [heroClip, spreadClip, lineupClip] = [$('heroVideo'), $('spreadVideo'), $('lineupVideo')].map(v => clips.find(c => c.v === v));
+  function cueClips() {
+    const vh = innerHeight;
+    const r = $('intro').getBoundingClientRect();
+    cue(heroClip, -r.top / (r.height - vh) > .12);                   // the iPhone has begun turning toward you
+    const s = spread.getBoundingClientRect();
+    cue(spreadClip, (vh - s.top) / (vh * .85) > .92);                  // the iPad has finished tilting up
+    const l = lineup.getBoundingClientRect();
+    cue(lineupClip, l.top < vh * .45 && l.bottom > vh * .3);           // the lineup is in the middle of the screen
+  }
+  if (reduce) addEventListener('scroll', cueClips, { passive: true });
+  cueClips();
+  setTimeout(() => cue(heroClip, scrollY < innerHeight), 1200);       // the first page turns on its own, too
 })();
 </script>
 
