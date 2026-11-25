@@ -115,7 +115,9 @@ function start() {
   const PERSPECTIVE = 1700;                                               // as .intro-sticky's CSS perspective
   let w = 0, h = 0;
   function size() {
-    w = stage.clientWidth; h = stage.clientHeight;
+    const nw = stage.clientWidth, nh = stage.clientHeight;
+    if (nw === w && nh === h) return;                   // reallocating the drawing buffer is costly; only when it truly changed
+    w = nw; h = nh;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.fov = 2 * Math.atan(h / 2 / PERSPECTIVE) * 180 / Math.PI;      // one world unit = one CSS pixel at z = 0
@@ -161,7 +163,7 @@ function start() {
     last = key;
     const rx = num(st.getPropertyValue('--rx')), ry = num(st.getPropertyValue('--ry')), rz = num(st.getPropertyValue('--rz'));
     const tyRaw = st.getPropertyValue('--ty').trim(), s = num(st.getPropertyValue('--s')) || 1;
-    const ty = tyRaw.endsWith('vh') ? num(tyRaw) * innerHeight / 100 : num(tyRaw);
+    const ty = tyRaw.endsWith('vh') ? num(tyRaw) * h / 100 : num(tyRaw);   // svh: the pinned stage is 100svh tall
     model.position.set(cx - w / 2, h / 2 - cy - ty, 0);
     model.rotation.set(-rx * Math.PI / 180, ry * Math.PI / 180, -rz * Math.PI / 180, 'XYZ');   // CSS is y-down
     model.scale.setScalar(k * s);

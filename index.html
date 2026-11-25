@@ -254,14 +254,14 @@ footer { padding-block: 22px; background: var(--panel); }
 .watch .side { position: absolute; right: -2.2cqw; top: 52%; width: 3cqw; height: 20%; border-radius: 1.5cqw; background: linear-gradient(90deg, #6d6e71, #c9cacc); }
 
 /* ---------- 1. Hero: iPhone turns toward you as you scroll ---------- */
-.intro { height: 230vh; background: #000; }
-.intro-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; place-items: center; perspective: 1700px; }
-.intro .copy { position: absolute; top: 11vh; left: 0; right: 0; text-align: center; z-index: 2; padding: 0 20px; will-change: opacity, transform; }
+.intro { height: 230vh; height: 230svh; background: #000; }
+.intro-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; perspective: 1700px; }
+.intro .copy { position: absolute; top: 11vh; top: 11svh; left: 0; right: 0; text-align: center; z-index: 2; padding: 0 20px; will-change: opacity, transform; }
 .intro h1 { font-size: clamp(44px, 7.6vw, 100px); line-height: 1.04; letter-spacing: -.02em; margin: 0; font-weight: 700; }
 .intro .glow { position: absolute; left: 50%; top: 62%; width: 70vmin; height: 70vmin; transform: translate(-50%, -50%); border-radius: 50%;
   background: radial-gradient(circle, rgba(15,191,134,.22), rgba(79,163,255,.12) 40%, transparent 70%); filter: blur(30px); opacity: var(--glow, 0); }
-.hero-phone { --rx: 52deg; --ry: -24deg; --rz: 14deg; --ty: 34vh; --s: .9;
-  width: min(300px, 60vw, 37vh); transform: translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(var(--s));
+.hero-phone { --rx: 52deg; --ry: -24deg; --rz: 14deg; --ty: 34svh; --s: .9;
+  width: min(300px, 60vw, 37vh); width: min(300px, 60vw, 37svh); transform: translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(var(--s));
   will-change: transform; }
 .hero-phone .slab { transform: translateZ(-2.6cqw); box-shadow: 0 50px 110px rgba(0,0,0,.8); }
 .hero-phone .slab.s2 { transform: translateZ(-1.3cqw); background: var(--ti-3); }
@@ -328,7 +328,7 @@ footer { padding-block: 22px; background: var(--panel); }
   background: repeating-linear-gradient(180deg, #8d8e91 0 .7cqw, #d6d7d9 .7cqw 1.4cqw); }
 
 @media (max-width: 760px) {
-  .intro { height: 190vh; }
+  .intro { height: 190vh; height: 190svh; }
   .spread, .pencil-scene, .lineup { padding: 80px 0; }
   .lineup-stage { aspect-ratio: 1100 / 760; }
   .lineup-stage .ipad { left: 8%; }
@@ -424,7 +424,6 @@ footer { padding-block: 22px; background: var(--panel); }
 /* Smoothness on every device */
 .intro .glow { filter: none; background: radial-gradient(circle, rgba(15,191,134,.16), rgba(79,163,255,.08) 38%, transparent 68%); }   /* soft by itself; no blur to redraw */
 .pen-shadow { filter: blur(.9cqw) !important; }
-.features, .section, .platforms, footer { content-visibility: auto; contain-intrinsic-size: auto 900px; }   /* off-screen sections skip layout and paint */
 /* "Coming soon" in the hero: quiet, no badge until the app is live. */
 .soon { display: inline-block; margin: 26px 0 0; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22);
   color: #d2d2d7; font-size: 15px; letter-spacing: 0; }
@@ -480,7 +479,7 @@ footer { padding-block: 22px; background: var(--panel); }
         <div class="slab"></div><div class="slab s2"></div>
         <span class="btn action"></span><span class="btn vup"></span><span class="btn vdown"></span><span class="btn power"></span><span class="btn capture"></span>
         <div class="band"><div class="bezel"><div class="screen">
-          <video class="screen-video" id="heroVideo" src="images/iphone-turn.mp4" poster="images/iphone-turn.jpg" muted playsinline preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper"></video>
+          <video class="screen-video" id="heroVideo" poster="images/iphone-turn.jpg" muted playsinline preload="auto" aria-label="Turning a page in Bible Nook: the page curls over like paper"><source src="images/iphone-turn-480.mp4" media="(max-width: 700px)"><source src="images/iphone-turn.mp4"></video>
           <span class="island"></span>
         </div></div></div>
       </div>
@@ -681,13 +680,14 @@ footer { padding-block: 22px; background: var(--panel); }
   const spread = $('spreadIpad'), lineup = $('lineup');
   function onScroll() {
     const vh = innerHeight;
-    // Hero: the phone rises and turns to face you while the section is pinned
-    const r = intro.getBoundingClientRect();
-    const p = clamp(-r.top / (r.height - vh)), e = easeInOut(clamp(p / .8));
+    // Hero: the phone rises and turns to face you while the section is pinned. Measured against the pinned
+    // stage (a steady 100svh), not the window, which grows and shrinks as Safari's address bar moves.
+    const r = intro.getBoundingClientRect(), stageH = intro.firstElementChild.offsetHeight;
+    const p = clamp(-r.top / (r.height - stageH)), e = easeInOut(clamp(p / .8));
     phone.style.setProperty('--rx', lerp(52, 0, e) + 'deg');
     phone.style.setProperty('--ry', lerp(-24, 0, e) + 'deg');
     phone.style.setProperty('--rz', lerp(14, 0, e) + 'deg');
-    phone.style.setProperty('--ty', lerp(34, 4, e) + 'vh');
+    phone.style.setProperty('--ty', lerp(34, 4, e) + 'svh');
     phone.style.setProperty('--s', lerp(.9, 1.08, e));
     const c = clamp((p - .25) / .3);
     copy.style.opacity = 1 - c; copy.style.transform = `translateY(${-c * 60}px) scale(${1 - c * .06})`;
@@ -797,7 +797,7 @@ footer { padding-block: 22px; background: var(--panel); }
   function cueClips() {
     const vh = innerHeight;
     const r = $('intro').getBoundingClientRect();
-    cue(heroClip, -r.top / (r.height - vh) > .12);                   // the iPhone has begun turning toward you
+    cue(heroClip, -r.top / (r.height - $('intro').firstElementChild.offsetHeight) > .12);                   // the iPhone has begun turning toward you
     const s = spread.getBoundingClientRect();
     cue(spreadClip, (vh - s.top) / (vh * .85) > .92);                  // the iPad has finished tilting up
     const l = lineup.getBoundingClientRect();
