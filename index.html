@@ -458,7 +458,9 @@ footer { padding-block: 22px; background: var(--panel); }
 /* The Pencil card: the curved menu shown on an iPad in its bezel, sitting in the card with room around it. */
 /* Zoomed in on the iPad's top-left corner, where the curved menu opens: the device runs off the card's
    right and bottom edges, like a close-up on Apple's pages. */
-.pencil .card-media { position: relative; padding: 0; overflow: hidden; align-self: stretch; min-height: 360px; aspect-ratio: 4 / 3; }
+.pencil .card-media { position: relative; padding: 0; overflow: hidden; align-self: stretch; min-height: 360px; }
+/* Height from a padding spacer rather than aspect-ratio, which iPhone Safari can collapse to nothing on a grid item. */
+.pencil .card-media::before { content: ""; display: block; padding-top: 75%; }
 .pencil .card-media .pencil-ipad { position: absolute; left: 7%; top: 9%; width: 135%; margin: 0; }
 @media (max-width: 760px) { .pencil .card-media { min-height: 0; } .pencil .card-media .pencil-ipad { left: 6%; top: 8%; width: 112%; } }
 .pencil-ipad .screen img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; }
@@ -577,7 +579,7 @@ footer { padding-block: 22px; background: var(--panel); }
             <li>A keyboard or trackpad turns the page</li>
           </ul>
         </div>
-        <div class="card-media"><div class="ipad pencil-ipad"><div class="band"><div class="bezel"><div class="screen"><img src="images/ipad-menu.jpg" width="1600" height="1103" alt="Bible Nook on iPad: the curved menu of highlight colours and actions open at the Pencil tip over Acts 5" loading="lazy"></div></div></div></div></div>
+        <div class="card-media"><div class="ipad pencil-ipad"><div class="band"><div class="bezel"><div class="screen"><img src="images/ipad-menu.jpg" width="1600" height="1103" alt="Bible Nook on iPad: the curved menu of highlight colours and actions open at the Pencil tip over Acts 5" decoding="async"></div></div></div></div></div>
       </article>
     </div>
   </section>

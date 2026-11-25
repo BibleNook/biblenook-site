@@ -70,6 +70,14 @@ function build() {
   g.add(veil);
   g.userData.veil = veil;
 
+  // The Dynamic Island, cut into the top of the display as on the real phone (126 × 37 pt, 11 pt from the
+  // top edge of a 402-pt-wide screen), above the page fade so it never turns white.
+  const pt = SW / 402, IW = 126 * pt, IH = 37 * pt;
+  const island = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(IW, IH, IH / 2 - .01), 32),
+    new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false }));
+  island.position.set(0, SH / 2 - 11 * pt - IH / 2, D / 2 + .34);
+  g.add(island);
+
   // A faint reflection on the cover glass, added over the display.
   const sheen = new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(W - 2 * EDGE, H - 2 * EDGE, R - EDGE), 48),
     new THREE.MeshStandardMaterial({ color: 0x000000, roughness: .08, metalness: 0, transparent: true,
